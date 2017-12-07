@@ -2,7 +2,7 @@
 repo.registerModule("artus.module.util");
 
 var literalMatcher = function(str) {
-    return repo.getMatcher(str) ?: repo.registerMatcher(str, class("java.util.regex.Pattern").quote(str));
+    return repo.getMatcher(str) ?: repo.registerMatcher(str, clazz("java.util.regex.Pattern").quote(str));
 };
 repo.setUtil("literalMatcher", literalMatcher);
 """
