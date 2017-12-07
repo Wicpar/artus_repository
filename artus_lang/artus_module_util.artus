@@ -5,4 +5,10 @@ var literalMatcher = function(str) {
     return repo.getMatcher(str) ?: repo.registerMatcher(str, clazz("java.util.regex.Pattern").quote(str));
 };
 repo.setUtil("literalMatcher", literalMatcher);
+var endScript = function(contextType) {
+    var ctx = lexer.context.type;
+    lexer.changeContext(contextType);
+    lexer.pushContext(ctx);
+};
+repo.setUtil("endScript", endScript);
 """
