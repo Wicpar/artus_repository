@@ -1,0 +1,17 @@
+"""
+repo.registerModule("artus.tokens.base");
+
+//check for error matcher, just in case
+repo.getMatcher("error") ?: log("severe", "failed to find error matcher");
+
+//initialize base token matchers
+repo.registerMatcher("artus.space", "[\p{Z}\n\r]+");
+repo.registerMatcher("artus.nl", "\n");
+repo.registerMatcher("artus.name", "[\p{Pc}\p{L}\p{M}\p{No}][\p{Pc}\p{L}\p{M}\p{N}]*");
+
+//initialize basic operators if inexistant
+repo.getMatcher(".") ?: repo.registerMatcher(".", "\.");
+repo.getMatcher("{") ?: repo.registerMatcher("{", "\{");
+repo.getMatcher("}") ?: repo.registerMatcher("}", "\}");
+
+"""
