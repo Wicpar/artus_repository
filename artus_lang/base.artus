@@ -1,0 +1,12 @@
+"""
+repo.registerModule("artus.base");
+
+// create a base context to catch non matched elements and report in the log without crashing
+var error = repo.getMatcher("error") ?: repo.registerMatcher("error", ".");
+var recoverableStack = repo.registerMatcherStack("artus.recoverable", [error]);
+var recoverableCtx = repo.registerContextType("artus.recoverable", recoverableStack, {error.type: "log('severe', `expected: ${type.matcherStack}; got: ${token.text}`)"})
+
+// extend that context to ignore spaces, since we are not writing python. Don't forget unicode.
+var space = repo.getMatcher("space", "[\p{Z}\n\r]+");
+var spaceableCtx = repo.extendContextType("spaceable", recoverableCtx, [space], {space.type: null});
+"""
