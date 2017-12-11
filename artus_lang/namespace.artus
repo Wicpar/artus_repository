@@ -1,3 +1,34 @@
 """
 repo.registerModule("artus.namespace");
+repo.hasModule("artus.base") ?: log('severe', 'artus.base module not found');
+repo.hasModule("artus.module.util") ?: log('severe', 'artus.module.util module not found');
+var ctx = repo.getContextType("artus.commentable") ?: log('severe', 'artus.commentable not found');
+
+var literalMatcher = repo.getUtil("literalMatcher");
+var mainCtx = repo.getContextType('artus.main');
+
+var name = repo.getMatcher("artus.name") ?: repo.registerMatcher("artus.name", "[\p{Pc}\p{L}\p{M}\p{No}][\p{Pc}\p{L}\p{M}\p{N}]*");
+var dot = literalMatcher(".");
+var namespace = repo.registerMatcher("artus.namespace", "namespace");
+var bo = literalMatcher("{");
+var bc = literalMatcher("}");
+
+var blockCtx = repo.preRegisterContextType("artus.namespace.block", mainCtx);
+var namespaceNameCtx = repo.preRegisterContextType("artus.namespace.name", ctx);
+var namespaceNextCtx = repo.preRegisterContextType("artus.namespace.next", ctx);
+
+blockCtx.addMatchAction(bc, function () { lexer.popContext(); });
+
+namespaceNameCtx.addMatchAction(name, function () {
+    lexer.changeContext(namespaceNextCtx, scope.getOrDefault(token.text));
+});
+
+namespaceNextCtx.addMatchAction(dot, function () {
+    lexer.changeContext(namespaceNameCtx);
+});
+namespaceNextCtx.addMatchAction(bo, function () {
+    lexer.changeContext(blockCtx);
+});
+
+mainCtx.addMatchAction(namespace, function() { lexer.pushContext(namespaceNameCtx); });
 """

@@ -7,10 +7,14 @@ var recoverableCtx = repo.registerContextType("artus.recoverable", [error], {err
 
 // extend that context to ignore spaces, since we are not writing python. Don't forget unicode.
 var space = repo.registerMatcher("artus.base.space", "[\p{Z}\r]+|\n");
-var spaceableCtx = repo.extendContextType("spaceable", recoverableCtx, [space]);
+var spaceableCtx = repo.registerContextType("spaceable", [space], null, recoverableCtx);
 
 // extend that context to ignore spaces, since we are not writing python. Don't forget unicode.
 var lineComment = repo.registerMatcher("artus.base.comment.line", "//.*?\n");
 var blockComment = repo.registerMatcher("artus.base.comment.block", "/\*.*?\*/");
-var commentableCtx = repo.extendContextType("commentable", spaceableCtx, [blockComment, lineComment]);
+var commentableCtx = repo.registerContextType("artus.commentable", [blockComment, lineComment], null, spaceableCtx);
+
+// create the main hook, to allow extension
+var mainCtx = repo.preRegisterContextType("artus.main", commentableCtx);
+
 """
