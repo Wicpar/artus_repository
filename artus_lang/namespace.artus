@@ -7,7 +7,7 @@ var ctx = repo.getContextType("artus.commentable") ?: log('severe', 'artus.comme
 var literalMatcher = repo.getUtil("literalMatcher");
 var mainCtx = repo.getContextType('artus.main');
 
-var name = repo.getMatcher("artus.name") ?: repo.registerMatcher("artus.name", "[\p{Pc}\p{L}\p{M}\p{No}][\p{Pc}\p{L}\p{M}\p{N}]*");
+var name = repo.getMatcher("artus.name") ?: log('severe', 'artus.name matcher not found');
 var dot = literalMatcher(".");
 var namespace = repo.registerMatcher("artus.namespace", "namespace");
 var bo = literalMatcher("{");
