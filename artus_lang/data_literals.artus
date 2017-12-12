@@ -10,13 +10,13 @@ var oct = repo.registerMatcher("artus.literals.octal", "0o[0-7]+");
 var dec = repo.registerMatcher("artus.literals.decimal", "[1-9][0-9]*");
 
 ctx.addMatchAction(hex, function () {
-    scope.structure.add(endScopeOf(bitArrayOf(token.text.substring(2), 4)));
+    scope.structure.add(endScopeOf(bitArrayOf(token.text.substring(2), 4)).toResolver());
 });
 ctx.addMatchAction(bin, function () {
-    scope.structure.add(endScopeOf(bitArrayOf(token.text.substring(2), 1)));
+    scope.structure.add(endScopeOf(bitArrayOf(token.text.substring(2), 1)).toResolver());
 });
 ctx.addMatchAction(oct, function () {
-    scope.structure.add(endScopeOf(bitArrayOf(token.text.substring(2), 3)));
+    scope.structure.add(endScopeOf(bitArrayOf(token.text.substring(2), 3)).toResolver());
 });
 ctx.addMatchAction(dec, function () {
     scope.structure.add(endScopeOf(bitArrayOf(token.text)));

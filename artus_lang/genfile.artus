@@ -1,0 +1,27 @@
+"""
+repo.registerModule("artus.genfile");
+
+repo.hasModule("artus.base") ?: log('severe', 'artus.base module not found');
+repo.hasModule("artus.module.util") ?: log('severe', 'artus.module.util module not found');
+repo.hasModule("artus.structure.block") ?: log('severe', 'artus.structure.block module not found');
+var ctx = repo.getContextType("artus.commentable") ?: log('severe', 'artus.commentable not found');
+var mainCtx = repo.getContextType('artus.main');
+
+var blockCtx = repo.getContextType("artus.structure.line") ?: log('severe', 'artus.structure.line not found');
+
+var genfile = repo.registerMatcher("artus.genfile", "genfile");
+var str = repo.registerMatcher("artus.genfile.string", '".*?"');
+
+
+var nameCtx = repo.preRegisterContextType("artus.genfile.name", ctx, genfile);
+
+nameCtx.addMatchAction(str, function () {
+    var filename = token.text.substring(1, size(token.text) - 1);
+    var artusScope = scope.getOrDefault("genfile:" + filename);
+    lexer.changeContext(blockCtx, artusScope);
+    lexer.parser.addFileCompiler(filename, artusScope);
+});
+
+mainCtx.addContextPush(nameCtx);
+
+"""
