@@ -1,0 +1,22 @@
+"""
+repo.registerModule("artus.structure.block");
+
+repo.hasModule("artus.base") ?: log('severe', 'artus.base module not found');
+repo.hasModule("artus.module.util") ?: log('severe', 'artus.module.util module not found');
+var ctx = repo.getContextType("artus.commentable") ?: log('severe', 'artus.commentable not found');
+
+var literalMatcher = repo.getUtil("literalMatcher");
+var bo = literalMatcher("{");
+var bc = literalMatcher("}");
+var semi = literalMatcher(";");
+var nl = repo.getMatcher("artus.nl") ?: repo.registerMatcher("artus.nl", "\n");
+
+var structureCtx = repo.preRegisterContextType("artus.structure", ctx);
+var structureLineCtx = repo.preRegisterContextType("artus.structure.line", structureCtx);
+var structureBlockCtx = repo.preRegisterContextType("artus.structure.block", structureCtx, bo);
+
+structureLineCtx.addContextPop(semi);
+structureLineCtx.addContextPop(nl);
+structureBlockCtx.addContextPop(bc);
+structureLineCtx.addContextPush(structureBlockCtx)
+"""

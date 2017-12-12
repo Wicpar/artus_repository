@@ -13,22 +13,18 @@ var namespace = repo.registerMatcher("artus.namespace", "namespace");
 var bo = literalMatcher("{");
 var bc = literalMatcher("}");
 
-var blockCtx = repo.preRegisterContextType("artus.namespace.block", mainCtx);
-var namespaceNameCtx = repo.preRegisterContextType("artus.namespace.name", ctx);
+var blockCtx = repo.preRegisterContextType("artus.namespace.block", mainCtx, bo);
+var namespaceNameCtx = repo.preRegisterContextType("artus.namespace.name", ctx, namespace);
 var namespaceNextCtx = repo.preRegisterContextType("artus.namespace.next", ctx);
 
-blockCtx.addMatchAction(bc, function () { lexer.popContext(); });
+blockCtx.addContextPop(bc);
 
 namespaceNameCtx.addMatchAction(name, function () {
     lexer.changeContext(namespaceNextCtx, scope.getOrDefault(token.text));
 });
 
-namespaceNextCtx.addMatchAction(dot, function () {
-    lexer.changeContext(namespaceNameCtx);
-});
-namespaceNextCtx.addMatchAction(bo, function () {
-    lexer.changeContext(blockCtx);
-});
+namespaceNextCtx.addContextChange(namespaceNameCtx, dot);
+namespaceNextCtx.addContextChange(blockCtx);
 
-mainCtx.addMatchAction(namespace, function() { lexer.pushContext(namespaceNameCtx); });
+mainCtx.addContextPush(namespaceNameCtx);
 """
