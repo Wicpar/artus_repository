@@ -1,0 +1,25 @@
+"""
+repo.registerModule("artus.literals.data");
+repo.hasModule("artus.structure.block") ?: log('severe', 'artus.structure.block module not found');
+
+var ctx = repo.getContextType("artus.structure") ?: log('severe', 'artus.structure not found');
+
+var hex = repo.registerMatcher("artus.literals.hex", "0x([0-9A-Fa-f]{2})+");
+var bin = repo.registerMatcher("artus.literals.binary", "0b[0-1]+");
+var oct = repo.registerMatcher("artus.literals.octal", "0o[0-7]+");
+var dec = repo.registerMatcher("artus.literals.decimal", "[1-9][0-9]*");
+
+ctx.addMatchAction(hex, function () {
+    scope.structure.add(new("com.artuslang.core.scopes.EndScope", new("com.artuslang.core.ArtusBitArray", token.text.substring(2), 4), scope));
+});
+ctx.addMatchAction(bin, function () {
+    scope.structure.add(new("com.artuslang.core.scopes.EndScope", new("com.artuslang.core.ArtusBitArray", token.text.substring(2), 1), scope));
+});
+ctx.addMatchAction(oct, function () {
+    scope.structure.add(new("com.artuslang.core.scopes.EndScope", new("com.artuslang.core.ArtusBitArray", token.text.substring(2), 3), scope));
+});
+ctx.addMatchAction(dec, function () {
+    scope.structure.add(new("com.artuslang.core.scopes.EndScope", new("com.artuslang.core.ArtusBitArray", token.text), scope));
+});
+
+"""

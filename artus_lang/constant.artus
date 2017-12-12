@@ -5,6 +5,7 @@ repo.hasModule("artus.base") ?: log('severe', 'artus.base module not found');
 repo.hasModule("artus.module.util") ?: log('severe', 'artus.module.util module not found');
 repo.hasModule("artus.structure.block") ?: log('severe', 'artus.structure.block module not found');
 var ctx = repo.getContextType("artus.commentable") ?: log('severe', 'artus.commentable not found');
+var mainCtx = repo.getContextType('artus.main');
 
 var literalMatcher = repo.getUtil("literalMatcher");
 var mainCtx = repo.getContextType('artus.main');
@@ -13,11 +14,11 @@ var lineStructureCtx = repo.getContextType('artus.structure.line');
 var name = repo.getMatcher("artus.name") ?: log('severe', 'artus.name matcher not found');
 var dot = literalMatcher(".");
 var semi = literalMatcher(";");
-var eq = literalMatcher("=");
+var equal = literalMatcher("=");
 var nl = repo.getMatcher("artus.nl") ?: repo.registerMatcher("artus.nl", "\n");
-var namespace = repo.registerMatcher("artus.val", "val");
+var val = repo.registerMatcher("artus.val", "val");
 
-var valNameCtx = repo.preRegisterContextType("artus.val.name", ctx);
+var valNameCtx = repo.preRegisterContextType("artus.val.name", ctx, val);
 var valNextCtx = repo.preRegisterContextType("artus.val.next", ctx);
 
 valNameCtx.addMatchAction(name, function () {
@@ -25,7 +26,7 @@ valNameCtx.addMatchAction(name, function () {
 });
 
 valNextCtx.addContextChange(valNameCtx, dot);
-valNextCtx.addContextChange(blockCtx, eq);
+valNextCtx.addContextChange(lineStructureCtx, equal);
 
-
+mainCtx.addContextPush(valNameCtx);
 """
