@@ -10,16 +10,16 @@ var oct = repo.registerMatcher("artus.literals.octal", "0o[0-7]+");
 var dec = repo.registerMatcher("artus.literals.decimal", "[1-9][0-9]*");
 
 ctx.addMatchAction(hex, function () {
-    scope.structure.add(new("com.artuslang.core.scopes.EndScope", new("com.artuslang.core.ArtusBitArray", token.text.substring(2), 4), scope));
+    scope.structure.add(endScopeOf(bitArrayOf(token.text.substring(2), 4)));
 });
 ctx.addMatchAction(bin, function () {
-    scope.structure.add(new("com.artuslang.core.scopes.EndScope", new("com.artuslang.core.ArtusBitArray", token.text.substring(2), 1), scope));
+    scope.structure.add(endScopeOf(bitArrayOf(token.text.substring(2), 1)));
 });
 ctx.addMatchAction(oct, function () {
-    scope.structure.add(new("com.artuslang.core.scopes.EndScope", new("com.artuslang.core.ArtusBitArray", token.text.substring(2), 3), scope));
+    scope.structure.add(endScopeOf(bitArrayOf(token.text.substring(2), 3)));
 });
 ctx.addMatchAction(dec, function () {
-    scope.structure.add(new("com.artuslang.core.scopes.EndScope", new("com.artuslang.core.ArtusBitArray", token.text), scope));
+    scope.structure.add(endScopeOf(bitArrayOf(token.text)));
 });
 
 """
