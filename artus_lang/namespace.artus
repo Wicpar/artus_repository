@@ -20,7 +20,7 @@ var namespaceNextCtx = repo.preRegisterContextType("artus.namespace.next", ctx);
 blockCtx.addContextPop(bc);
 
 namespaceNameCtx.addMatchAction(name, function () {
-    lexer.changeContext(namespaceNextCtx, scope.getOrDefault(token.text));
+    lexer.changeContext(namespaceNextCtx, subScopeOf(contextualized(token.text)));
 });
 
 namespaceNextCtx.addContextChange(namespaceNameCtx, dot);

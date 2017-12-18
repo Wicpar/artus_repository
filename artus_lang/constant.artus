@@ -22,7 +22,7 @@ var valNameCtx = repo.preRegisterContextType("artus.val.name", ctx, val);
 var valNextCtx = repo.preRegisterContextType("artus.val.next", ctx);
 
 valNameCtx.addMatchAction(name, function () {
-    lexer.changeContext(valNextCtx, scope.getOrDefault(token.text));
+    lexer.changeContext(valNextCtx, subScopeOf(contextualized(token.text)));
 });
 
 valNextCtx.addContextChange(valNameCtx, dot);
