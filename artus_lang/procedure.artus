@@ -1,0 +1,87 @@
+"""
+repo.registerModule("artus.procedure");
+repo.hasModule("artus.base") ?: log('severe', 'artus.base module not found');
+repo.hasModule("artus.module.util") ?: log('severe', 'artus.module.util module not found');
+repo.hasModule("artus.structure.block") ?: log('severe', 'artus.structure.block module not found');
+
+var ctx = repo.getContextType("artus.commentable") ?: log('severe', 'artus.commentable not found');
+
+var blockCtx = repo.getContextType("artus.structure.line") ?: log('severe', 'artus.structure.line not found');
+
+var literalMatcher = repo.getUtil("literalMatcher");
+var mainCtx = repo.getContextType('artus.main');
+
+var name = repo.getMatcher("artus.name") ?: log('severe', 'artus.name matcher not found');
+var dot = literalMatcher(".");
+var proc = repo.registerMatcher("artus.proc", "proc");
+var bo = literalMatcher("{");
+var bc = literalMatcher("}");
+var po = literalMatcher("(");
+var pc = literalMatcher(")");
+var comma = literalMatcher(",");
+var colon = literalMatcher(":");
+
+var paramsCtx = repo.preRegisterContextType("artus.procedure.params", ctx);
+var paramsNextCtx = repo.preRegisterContextType("artus.procedure.params.next", ctx);
+var procedureNameCtx = repo.preRegisterContextType("artus.procedure.name", ctx, proc);
+var procedureNextCtx = repo.preRegisterContextType("artus.procedure.next", ctx);
+
+var currentToken = 'paramsCtx.token';
+var tokens = 'paramsCtx.tokens';
+
+paramsCtx.addMatchAction(name, function () {
+    lexer.changeContext(paramsNextCtx);
+    setProperty(currentToken, token.text);
+});
+
+paramsNextCtx.addMatchAction(comma, function () {
+    var name = getProperty(currentToken);
+    lexer.popContext();
+    var lst = getProperty(tokens);
+    if (lst == null) {
+        lst = new('java.util.ArrayList');
+        setProperty(tokens, lst);
+    }
+    lst.add(name);
+    setProperty(tokens, lst);
+    lexer.pushContext(paramsCtx, scope);
+});
+
+paramsNextCtx.addMatchAction( pc , function () {
+    var name = getProperty(currentToken);
+    lexer.popContext();
+    var lst = getProperty(tokens) ?: new('java.util.ArrayList');
+    if (name != null)
+        lst.add(name);
+    setProperty(tokens, null);
+    var aliases = new('java.util.HashMap');
+    var len = size(lst);
+    var i = 0;
+    while (i lt len) {
+        aliases.put(i, lst.get(i));
+        i = i + 1;
+    }
+    var retScope = new('com.artuslang.core.scopes.IdentifiedArtusBasicScope', logger, lst)
+    var declaration = new('com.artuslang.core.ContextualizedScopeBuilder', function(map, scope) {
+        var newScope = new('com.artuslang.core.scopes.ArtusHierarchicalScope', logger, [scope]);
+        newScope.structure.addAll(scope.structure);
+        for (var item : map) {
+           subScopeOf(item, newScope);
+        }
+        return newScope;
+    }, function(map) {
+        return map.getKeys().containsAll(lst) && lst.containsAll(map.getKeys());
+    }, aliases, retScope, 0, jexl);
+    lexer.pushContext(blockCtx, subScopeOf(declaration, scope));
+    log("info", 'be');
+});
+
+procedureNameCtx.addMatchAction(name, function () {
+    lexer.changeContext(procedureNextCtx, subScopeOf(id(token.text)));
+});
+
+procedureNextCtx.addContextChange(procedureNameCtx, dot);
+procedureNextCtx.addContextChange(paramsCtx, po);
+
+mainCtx.addContextPush(procedureNameCtx);
+"""

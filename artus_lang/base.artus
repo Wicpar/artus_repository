@@ -21,5 +21,7 @@ var mainCtx = repo.preRegisterContextType("artus.main", commentableCtx);
 var name = repo.getMatcher("artus.name") ?: repo.registerMatcher("artus.name", "[\p{Pc}\p{L}\p{M}\p{No}][\p{Pc}\p{L}\p{M}\p{N}]*");
 
 repo.registerLinearFactory(10000, [clazz('java.lang.String')]); // allow namespace declaration with contextualized strings, with low priority
+repo.registerProceduralFactory(1000); // allow procedural scope declaration with high priority
+repo.registerMappedFactory(1000000000); // mapping with lowest priority
 
 """

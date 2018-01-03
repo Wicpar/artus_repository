@@ -19,7 +19,7 @@ ctx.addMatchAction(oct, function () {
     scope.structure.add(endScopeOf(bitArrayOf(token.text.substring(2), 3)).toResolver());
 });
 ctx.addMatchAction(dec, function () {
-    scope.structure.add(endScopeOf(bitArrayOf(token.text)));
+    scope.structure.add(endScopeOf(bitArrayOf(token.text)).toResolver());
 });
 
 """

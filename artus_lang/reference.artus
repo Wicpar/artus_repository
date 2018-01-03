@@ -1,0 +1,20 @@
+"""
+repo.registerModule("artus.reference");
+repo.hasModule("artus.base") ?: log('severe', 'artus.base module not found');
+repo.hasModule("artus.module.util") ?: log('severe', 'artus.module.util module not found');
+repo.hasModule("artus.structure.block") ?: log('severe', 'artus.structure.block module not found');
+
+var ctx = repo.getContextType("artus.structure") ?: log('severe', 'artus.structure not found');
+
+var literalMatcher = repo.getUtil("literalMatcher");
+
+var name = repo.getMatcher("artus.name") ?: log('severe', 'artus.name matcher not found');
+var dot = literalMatcher(".");
+var semi = literalMatcher(";");
+var nl = repo.getMatcher("artus.nl") ?: repo.registerMatcher("artus.nl", "\n");
+
+var refNameCtx = repo.preRegisterContextType("artus.reference.name", ctx, name);
+
+ctx.addContextPush(refNameCtx);
+
+"""

@@ -17,7 +17,7 @@ var nameCtx = repo.preRegisterContextType("artus.genfile.name", ctx, genfile);
 
 nameCtx.addMatchAction(str, function () {
     var filename = token.text.substring(1, size(token.text) - 1);
-    var artusScope = subScopeOf(contextualized("genfile:" + filename));
+    var artusScope = subScopeOf(id("genfile:" + filename));
     lexer.changeContext(blockCtx, artusScope);
     lexer.parser.addFileCompiler(filename, artusScope);
 });
